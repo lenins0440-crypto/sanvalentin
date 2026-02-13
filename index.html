@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Para Ti ❤️</title>
+<title>Para mi Labubu 💖</title>
 <style>
 body{
     margin:0;
@@ -15,12 +15,18 @@ body{
 
 h1{
     margin-top:40px;
-    font-size:40px;
+    font-size:38px;
+}
+
+.saludo{
+    font-size:24px;
+    margin-top:15px;
+    font-style:italic;
 }
 
 #contador{
     font-size:22px;
-    margin-top:20px;
+    margin-top:25px;
     font-weight:bold;
 }
 
@@ -44,75 +50,4 @@ h1{
     background:rgba(255,255,255,0.15);
     padding:30px;
     border-radius:20px;
-    animation:fade 2s ease-in-out;
-}
-
-@keyframes fade{
-    from{opacity:0;}
-    to{opacity:1;}
-}
-</style>
-</head>
-<body>
-
-<h1>Desde que empezó nuestra historia ❤️</h1>
-
-<div id="contador"></div>
-
-<div class="corazon" onclick="mostrarMensaje()">❤️</div>
-
-<div id="mensaje">
-No importa lo que pase alrededor, cuando pienso en ti todo se calma.<br><br>
-
-Eres ese pensamiento que me acompaña al despertar y el último que abrazo antes de dormir.<br><br>
-
-Amarte ha sido lo más bonito que me ha pasado.<br>
-Has llenado mi vida de luz, de ilusión, de esperanza.<br>
-Me enseñaste que el amor verdadero se siente en el alma, que no necesita explicaciones, porque simplemente late… fuerte y constante.<br><br>
-
-Gracias por existir.<br>
-Gracias por tu ternura, por tu forma de mirarme con el corazón, por cada palabra que me regalas y por hacerme sentir tan especial.<br><br>
-
-Hoy quiero que sepas que mi amor por ti no tiene límites, no tiene medidas, no tiene final.<br>
-Te llevo conmigo en cada sueño, en cada plan, en cada latido.<br><br>
-
-Eres mi alegría más grande, mi motivación diaria y el amor más puro que ha tocado mi vida.<br><br>
-
-<b>Feliz San Valentín, mi vida.</b><br>
-<b>Te amo más de lo que las palabras pueden expresar.</b>
-</div>
-
-<script>
-function actualizarContador(){
-    const inicio = new Date("September 28, 2025 02:21:00");
-    const ahora = new Date();
-
-    const diferencia = ahora - inicio;
-
-    const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
-    const horas = Math.floor((diferencia / (1000 * 60 * 60)) % 24);
-    const minutos = Math.floor((diferencia / (1000 * 60)) % 60);
-    const segundos = Math.floor((diferencia / 1000) % 60);
-
-    document.getElementById("contador").innerHTML =
-        dias + " días " +
-        horas + " horas " +
-        minutos + " minutos " +
-        segundos + " segundos juntos 💕";
-}
-
-setInterval(actualizarContador,1000);
-actualizarContador();
-
-function mostrarMensaje(){
-    document.getElementById("mensaje").style.display="block";
-}
-</script>
-
-</body>
-</html>
-
-
-
-
-
+    animation:
