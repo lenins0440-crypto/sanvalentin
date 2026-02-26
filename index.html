@@ -3,140 +3,179 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Juego de Suerte - Chad o Down</title>
+<title>CHAD vs DOWN - Luck Game</title>
 
 <style>
-    body{
-        margin:0;
-        height:100vh;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        background:linear-gradient(135deg,#111,#1f1f1f);
-        font-family:Arial, Helvetica, sans-serif;
-        color:white;
-        overflow:hidden;
-    }
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#0f0f0f;
+    font-family:Arial, Helvetica, sans-serif;
+    color:white;
+    overflow:hidden;
+    transition:0.4s;
+}
 
-    .container{
-        text-align:center;
-        background:#181818;
-        padding:40px;
-        border-radius:20px;
-        box-shadow:0 0 30px rgba(0,0,0,0.7);
-        transition:0.3s;
-    }
+.container{
+    text-align:center;
+    background:#181818;
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 0 30px black;
+    width:320px;
+}
 
-    h1{
-        margin-bottom:20px;
-        letter-spacing:2px;
-    }
+h1{
+    margin-bottom:10px;
+}
 
-    button{
-        padding:15px 30px;
-        font-size:18px;
-        border:none;
-        border-radius:12px;
-        cursor:pointer;
-        background:#00c3ff;
-        color:white;
-        transition:0.3s;
-    }
+button{
+    padding:15px 25px;
+    font-size:18px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    background:#00c3ff;
+    color:white;
+    transition:0.2s;
+}
 
-    button:hover{
-        transform:scale(1.1);
-        background:#0099cc;
-    }
+button:hover{
+    transform:scale(1.1);
+}
 
-    #result{
-        margin-top:30px;
-        font-size:40px;
-        font-weight:bold;
-        opacity:0;
-        transform:scale(0.5);
-        transition:0.5s;
-    }
+#result{
+    font-size:36px;
+    margin-top:20px;
+    min-height:50px;
+}
 
-    .win{
-        color:#00ff88;
-        text-shadow:0 0 20px #00ff88;
-        animation:shake 0.5s ease;
-    }
+#message{
+    margin-top:10px;
+    font-size:18px;
+    opacity:0.8;
+}
 
-    .lose{
-        color:#ff3b3b;
-        text-shadow:0 0 20px #ff0000;
-        animation:downShake 0.5s ease;
-    }
+.bar{
+    margin-top:20px;
+    height:12px;
+    background:#333;
+    border-radius:10px;
+    overflow:hidden;
+}
 
-    @keyframes shake{
-        0%{transform:translateX(0)}
-        25%{transform:translateX(-10px)}
-        50%{transform:translateX(10px)}
-        75%{transform:translateX(-10px)}
-        100%{transform:translateX(0)}
-    }
+.fill{
+    height:100%;
+    width:50%;
+    background:#00ff88;
+    transition:0.5s;
+}
 
-    @keyframes downShake{
-        0%{transform:translateY(0)}
-        25%{transform:translateY(10px)}
-        50%{transform:translateY(-10px)}
-        75%{transform:translateY(10px)}
-        100%{transform:translateY(0)}
-    }
+.win{
+    color:#00ff88;
+    text-shadow:0 0 20px #00ff88;
+}
 
-    .rolling{
-        animation:spin 1s linear infinite;
-    }
+.lose{
+    color:#ff3b3b;
+    text-shadow:0 0 20px red;
+}
 
-    @keyframes spin{
-        from{transform:rotate(0)}
-        to{transform:rotate(360deg)}
-    }
+@keyframes shake{
+    0%{transform:translateX(0)}
+    25%{transform:translateX(-8px)}
+    50%{transform:translateX(8px)}
+    75%{transform:translateX(-8px)}
+    100%{transform:translateX(0)}
+}
+
+.shake{
+    animation:shake 0.4s;
+}
 </style>
 </head>
 
 <body>
 
 <div class="container">
-    <h1>🎲 Juego de Suerte</h1>
-    <button onclick="playGame()">PROBAR SUERTE</button>
-    <div id="result">...</div>
+    <h1>🎲 CHAD vs DOWN</h1>
+    <button onclick="play()">PROBAR SUERTE</button>
+
+    <div id="result"></div>
+    <div id="message"></div>
+
+    <div class="bar">
+        <div class="fill" id="luckBar"></div>
+    </div>
+
+    <p>🔥 Racha: <span id="streak">0</span></p>
 </div>
 
 <script>
 
-function playGame(){
+let streak = 0;
+
+const winMessages = [
+"Modo leyenda activado 🗿",
+"El universo te respeta hoy",
+"Jugaste como campeón",
+"Nivel dios desbloqueado",
+"Suerte absurda detectada"
+];
+
+const loseMessages = [
+"La suerte te abandonó 😭",
+"Hoy no era tu día",
+"El RNG dijo NO",
+"Intentaste… fallaste",
+"Respawn emocional necesario"
+];
+
+function randomMessage(list){
+    return list[Math.floor(Math.random()*list.length)];
+}
+
+function play(){
+
     const result = document.getElementById("result");
+    const message = document.getElementById("message");
+    const bar = document.getElementById("luckBar");
 
-    result.style.opacity = "1";
-    result.className = "rolling";
-    result.innerText = "🎲";
+    let luck = Math.random();
 
-    // efecto suspense
-    setTimeout(()=>{
-        let random = Math.random();
+    bar.style.width = (luck*100)+"%";
 
-        result.className = "";
+    if(luck > 0.5){
 
-        if(random > 0.5){
-            result.innerText = "🗿 CHAD 🔥";
-            result.classList.add("win");
-            document.body.style.background =
-                "linear-gradient(135deg,#002b1f,#004d36)";
-        }else{
-            result.innerText = "😢 DOWN";
-            result.classList.add("lose");
-            document.body.style.background =
-                "linear-gradient(135deg,#2b0000,#4d0000)";
-        }
+        streak++;
+        result.className="win";
+        result.innerText="🗿 CHAD 🔥";
+        message.innerText=randomMessage(winMessages);
 
-        result.style.transform = "scale(1)";
-    },1500);
+        document.body.style.background=
+        "linear-gradient(135deg,#002b1f,#004d36)";
+
+    }else{
+
+        streak=0;
+        result.className="lose";
+        result.innerText="💀 DOWN";
+        message.innerText=randomMessage(loseMessages);
+
+        document.body.classList.add("shake");
+        setTimeout(()=>document.body.classList.remove("shake"),400);
+
+        document.body.style.background=
+        "linear-gradient(135deg,#2b0000,#4d0000)";
+    }
+
+    document.getElementById("streak").innerText=streak;
 }
 
 </script>
 
 </body>
 </html>
-
