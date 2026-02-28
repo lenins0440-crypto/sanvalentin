@@ -2,78 +2,79 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Modo Legendario ❤️</title>
+<title>Stephani 💖</title>
 
 <style>
 body{
-    margin:0;
-    font-family:Arial, Helvetica, sans-serif;
-    background:linear-gradient(135deg,#111,#1b0033,#000);
-    color:white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
+margin:0;
+font-family:Arial, Helvetica, sans-serif;
+background:linear-gradient(135deg,#0b0018,#1a0033,#000);
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
 }
 
 .game{
-    width:650px;
-    max-width:90%;
-    background:rgba(0,0,0,0.7);
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 0 25px #ff4df0;
+width:650px;
+max-width:92%;
+background:rgba(0,0,0,0.75);
+padding:25px;
+border-radius:15px;
+box-shadow:0 0 25px #ff4df0;
 }
 
 h1{
-    text-align:center;
-    color:#ff7df7;
+text-align:center;
+color:#ff87f9;
+margin-bottom:15px;
 }
 
 .textbox{
-    min-height:120px;
-    line-height:1.6;
-    font-size:18px;
-    margin-bottom:15px;
+min-height:130px;
+line-height:1.6;
+font-size:18px;
+margin-bottom:15px;
 }
 
 .buttons button{
-    width:100%;
-    margin:6px 0;
-    padding:12px;
-    border:none;
-    border-radius:10px;
-    background:#ff4df0;
-    color:white;
-    font-size:16px;
-    cursor:pointer;
-    transition:0.3s;
+width:100%;
+margin:6px 0;
+padding:12px;
+border:none;
+border-radius:10px;
+background:#ff4df0;
+color:white;
+font-size:16px;
+cursor:pointer;
+transition:.3s;
 }
 
 .buttons button:hover{
-    transform:scale(1.05);
-    background:#ff78f5;
+transform:scale(1.05);
+background:#ff7cf7;
 }
 
 .counter{
-    margin-top:15px;
-    text-align:center;
-    color:#ffd6ff;
-    font-size:14px;
+margin-top:15px;
+text-align:center;
+color:#ffd6ff;
+font-size:14px;
 }
 
-.legend{
-    margin-top:15px;
-    padding:10px;
-    background:#240033;
-    border-radius:10px;
-    display:none;
-    animation:fade 1s ease;
+.final{
+margin-top:15px;
+padding:12px;
+background:#260033;
+border-radius:10px;
+display:none;
+animation:fade 1s ease;
 }
 
 @keyframes fade{
-    from{opacity:0;}
-    to{opacity:1;}
+from{opacity:0}
+to{opacity:1}
 }
 </style>
 </head>
@@ -82,37 +83,36 @@ h1{
 
 <div class="game">
 
-<h1>✨ Modo Legendario ✨</h1>
+<h1>✨ Juego del Corazón ✨</h1>
 
-<div class="textbox" id="story">
-Bienvenido al reto secreto 💫<br>
-Solo alguien que realmente me conoce puede avanzar.<br><br>
-Adivina correctamente… y desbloquearás recuerdos bonitos.
+<div id="story" class="textbox">
+Solo alguien que realmente me conoce puede avanzar en este juego 💫<br><br>
+Cada respuesta correcta revela algo bonito que siento por ti.
 </div>
 
-<div class="buttons" id="choices"></div>
+<div id="choices" class="buttons"></div>
 
-<div class="legend" id="legendMode"></div>
+<div id="finalBox" class="final"></div>
 
-<div class="counter" id="counter"></div>
+<div id="counter" class="counter"></div>
 
 </div>
 
 <script>
 
-// ================= CONTADOR RELACIÓN =================
+// ================= CONTADOR =================
 const startDate = new Date("2025-09-28T02:27:00");
 
 function updateCounter(){
-    const now = new Date();
-    const diff = now - startDate;
+const now = new Date();
+const diff = now - startDate;
 
-    const days = Math.floor(diff/(1000*60*60*24));
-    const hours = Math.floor(diff/(1000*60*60)%24);
-    const minutes = Math.floor(diff/(1000*60)%60);
+const days = Math.floor(diff/(1000*60*60*24));
+const hours = Math.floor(diff/(1000*60*60)%24);
+const minutes = Math.floor(diff/(1000*60)%60);
 
-    document.getElementById("counter").innerHTML =
-    `⏳ Tiempo juntos: ${days} días, ${hours} horas y ${minutes} minutos`;
+document.getElementById("counter").innerHTML =
+`⏳ Tiempo juntos: ${days} días ${hours} horas ${minutes} minutos`;
 }
 setInterval(updateCounter,1000);
 updateCounter();
@@ -120,99 +120,153 @@ updateCounter();
 
 // ================= JUEGO =================
 
-let score = 0;
 let level = 0;
 
 const questions = [
 
 {
-text:"Primera pregunta 💭 ¿Qué me hace más feliz?",
+text:"🍣 Primera pista... ¿Cuál es su comida favorita?",
 options:[
-{txt:"Pasar tiempo contigo", correct:true,
-msg:"💖 Exacto… porque contigo hasta los días normales se sienten especiales."},
-
-{txt:"Dormir todo el día", correct:false},
-{txt:"Ver memes sin parar", correct:false}
+{txt:"Sushi",correct:true,
+msg:"Sabía que lo recordarías. Me gusta pensar que compartir comida contigo sería reírnos mientras decides cuál pieza me toca y cuál te quedas tú. Son detalles simples pero contigo todo se siente especial."},
+{txt:"Pizza",correct:false},
+{txt:"Hamburguesa",correct:false}
 ]
 },
 
 {
-text:"Segunda misión 🌙 ¿Qué prefiero en un momento tranquilo?",
+text:"🥥 Una fácil... ¿qué fruta no soporta?",
 options:[
-{txt:"Conversar contigo por horas", correct:true,
-msg:"✨ Porque hablar contigo nunca se siente suficiente."},
-
-{txt:"Silencio absoluto", correct:false},
-{txt:"Nada, solo mirar el techo", correct:false}
+{txt:"Coco",correct:true,
+msg:"Exacto. El amor también es aprender esas pequeñas cosas que evitarías solo para verla sonreír tranquila. Conocer tus gustos se siente como aprender un idioma bonito."},
+{txt:"Fresa",correct:false},
+{txt:"Mango",correct:false}
 ]
 },
 
 {
-text:"Nivel emocional ❤️ ¿Qué valoro más?",
+text:"🥝 Ahora algo dulce... ¿qué fruta ama?",
 options:[
-{txt:"La conexión sincera", correct:true,
-msg:"💫 Porque lo nuestro se siente real, sin esfuerzo."},
+{txt:"Kiwi",correct:true,
+msg:"Sí, el kiwi. Algo pequeño pero lleno de sabor, como esos momentos inesperados que terminan siendo los más bonitos cuando estamos conectados."},
+{txt:"Banano",correct:false},
+{txt:"Manzana",correct:false}
+]
+},
 
-{txt:"Los regalos caros", correct:false},
-{txt:"Ganar discusiones", correct:false}
+{
+text:"🐶 Momento decisivo... ¿qué prefiere?",
+options:[
+{txt:"Perros",correct:true,
+msg:"Correcto. Porque tienen esa lealtad sincera que recuerda mucho a lo que siento cuando pienso en nosotros."},
+{txt:"Gatos",correct:false},
+{txt:"Ambos igual",correct:false}
+]
+},
+
+{
+text:"🌷 ¿Qué flores le gustan más?",
+options:[
+{txt:"Tulipanes",correct:true,
+msg:"Los tulipanes tienen algo elegante y tranquilo, justo como la sensación que aparece cuando pienso en ti sin razón alguna."},
+{txt:"Rosas",correct:false},
+{txt:"Girasoles",correct:false}
+]
+},
+
+{
+text:"⚾ Nivel deportivo... ¿qué deporte disfruta?",
+options:[
+{txt:"Béisbol",correct:true,
+msg:"Exacto. Y aunque yo vea el partido diferente, siempre sería divertido compartir ese momento solo por verte disfrutarlo."},
+{txt:"Baloncesto",correct:false},
+{txt:"Tenis",correct:false}
+]
+},
+
+{
+text:"⚽ Pregunta peligrosa... ¿a qué equipo apoya?",
+options:[
+{txt:"Barcelona",correct:true,
+msg:"Sí, el Barcelona… y aquí viene mi defecto más hermoso: yo soy del Madrid 😌 pero incluso así sigo pensando que discutir por fútbol contigo sería más divertido que ganar cualquier clásico."},
+{txt:"Real Madrid",correct:false},
+{txt:"Ninguno",correct:false}
+]
+},
+
+{
+text:"❄️ Última pregunta... ¿clima favorito?",
+options:[
+{txt:"Invierno",correct:true,
+msg:"El invierno tiene algo especial. Es el tipo de clima que invita a quedarse hablando más tiempo, a sentir calma y a disfrutar la compañía sin prisa."},
+{txt:"Verano",correct:false},
+{txt:"Primavera",correct:false}
 ]
 }
 
 ];
 
 function render(){
-    const story = document.getElementById("story");
-    const choices = document.getElementById("choices");
+const story=document.getElementById("story");
+const choices=document.getElementById("choices");
 
-    if(level >= questions.length){
-        legendUnlock();
-        return;
-    }
-
-    story.innerHTML = questions[level].text;
-    choices.innerHTML = "";
-
-    questions[level].options.forEach(opt=>{
-        const btn = document.createElement("button");
-        btn.innerText = opt.txt;
-
-        btn.onclick = ()=>{
-            if(opt.correct){
-                score++;
-                story.innerHTML = opt.msg;
-                level++;
-                setTimeout(render,2000);
-            }else{
-                story.innerHTML = "😝 champique, te equivocaste… intenta otra vez.";
-            }
-        };
-
-        choices.appendChild(btn);
-    });
+if(level>=questions.length){
+finalScene();
+return;
 }
 
-function legendUnlock(){
-    document.getElementById("choices").innerHTML="";
-    document.getElementById("story").innerHTML =
-    "🏆 Has desbloqueado el MODO LEGENDARIO.";
+story.innerHTML=questions[level].text;
+choices.innerHTML="";
 
-    const legend = document.getElementById("legendMode");
-    legend.style.display="block";
-    legend.innerHTML = `
-    🌌 Versión Legendaria Activada<br><br>
-    Desde aquel 28 de septiembre a las 2:27 a.m.,
-    comenzó una historia que sigue creciendo.<br><br>
-    No es suerte… es conexión.<br>
-    No es coincidencia… es elección diaria.<br><br>
-    Y si llegaste hasta aquí,
-    significa que conoces mi corazón más de lo que imaginas ❤️
-    `;
+questions[level].options.forEach(opt=>{
+const btn=document.createElement("button");
+btn.innerText=opt.txt;
+
+btn.onclick=()=>{
+if(opt.correct){
+story.innerHTML=opt.msg;
+level++;
+setTimeout(render,2600);
+}else{
+story.innerHTML="😝 champique, te equivocaste. Intenta otra vez.";
+}
+};
+
+choices.appendChild(btn);
+});
+}
+
+function finalScene(){
+document.getElementById("choices").innerHTML="";
+document.getElementById("story").innerHTML="💫 Has llegado al final del juego.";
+
+const final=document.getElementById("finalBox");
+final.style.display="block";
+
+final.innerHTML=`
+<h2 style="color:#ff87f9;text-align:center;">Stephani, te amo</h2>
+
+A veces pienso que nuestra historia parece salida de un cuento raro y bonito,
+como si mezclara un poco de bella durmiente,
+un labubu perdido buscando su lugar,
+un umpa lumpa cantando algo inesperado
+y hasta un toque caótico tipo killer frots.
+
+Y aun así todo tiene sentido porque estás tú.
+
+No se trata solo de gustos o respuestas correctas.
+Se trata de cómo poco a poco te vuelves parte natural de mis días,
+de cómo sin darte cuenta haces que todo se sienta más ligero.
+
+Si este juego demuestra algo,
+es que conocerte nunca fue casualidad.
+Y elegirte… tampoco lo es.
+`;
 }
 
 render();
 
 </script>
-
 </body>
 </html>
 
