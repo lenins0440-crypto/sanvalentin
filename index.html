@@ -28,12 +28,11 @@ box-shadow:0 0 25px #ff4df0;
 h1{
 text-align:center;
 color:#ff87f9;
-margin-bottom:15px;
 }
 
 .textbox{
-min-height:130px;
-line-height:1.6;
+min-height:140px;
+line-height:1.7;
 font-size:18px;
 margin-bottom:15px;
 }
@@ -54,6 +53,12 @@ transition:.3s;
 .buttons button:hover{
 transform:scale(1.05);
 background:#ff7cf7;
+}
+
+.nextBtn{
+background:#ffd6ff !important;
+color:black !important;
+font-weight:bold;
 }
 
 .counter{
@@ -86,8 +91,7 @@ to{opacity:1}
 <h1>✨ Juego del Corazón ✨</h1>
 
 <div id="story" class="textbox">
-Solo alguien que realmente me conoce puede avanzar en este juego 💫<br><br>
-Cada respuesta correcta revela algo bonito que siento por ti.
+Solo alguien que realmente me conoce puede avanzar 💫
 </div>
 
 <div id="choices" class="buttons"></div>
@@ -118,87 +122,100 @@ setInterval(updateCounter,1000);
 updateCounter();
 
 
+// ================= UTIL =================
+
+// Mezclar opciones (Fisher-Yates)
+function shuffle(array){
+for(let i=array.length-1;i>0;i--){
+const j=Math.floor(Math.random()*(i+1));
+[array[i],array[j]]=[array[j],array[i]];
+}
+return array;
+}
+
+
 // ================= JUEGO =================
 
 let level = 0;
+let waitingNext = false;
 
 const questions = [
 
 {
-text:"🍣 Primera pista... ¿Cuál es su comida favorita?",
+text:"🍣 ¿Cuál es su comida favorita?",
 options:[
 {txt:"Sushi",correct:true,
-msg:"Sabía que lo recordarías. Me gusta pensar que compartir comida contigo sería reírnos mientras decides cuál pieza me toca y cuál te quedas tú. Son detalles simples pero contigo todo se siente especial."},
+msg:"Sabía que lo recordarías. Pensar en compartir sushi contigo se siente como esos momentos simples que terminan siendo inolvidables porque estás tú."},
 {txt:"Pizza",correct:false},
 {txt:"Hamburguesa",correct:false}
 ]
 },
 
 {
-text:"🥥 Una fácil... ¿qué fruta no soporta?",
+text:"🥥 ¿Qué fruta no soporta?",
 options:[
 {txt:"Coco",correct:true,
-msg:"Exacto. El amor también es aprender esas pequeñas cosas que evitarías solo para verla sonreír tranquila. Conocer tus gustos se siente como aprender un idioma bonito."},
+msg:"Exacto. Amar también es recordar esas pequeñas cosas para cuidar sonrisas sin que tengan que pedirlo."},
 {txt:"Fresa",correct:false},
 {txt:"Mango",correct:false}
 ]
 },
 
 {
-text:"🥝 Ahora algo dulce... ¿qué fruta ama?",
+text:"🥝 ¿Qué fruta ama?",
 options:[
 {txt:"Kiwi",correct:true,
-msg:"Sí, el kiwi. Algo pequeño pero lleno de sabor, como esos momentos inesperados que terminan siendo los más bonitos cuando estamos conectados."},
+msg:"Sí, el kiwi. Pequeño pero especial, como esos momentos contigo que aparecen sin aviso y terminan alegrando todo."},
 {txt:"Banano",correct:false},
 {txt:"Manzana",correct:false}
 ]
 },
 
 {
-text:"🐶 Momento decisivo... ¿qué prefiere?",
+text:"🐶 ¿Qué prefiere?",
 options:[
 {txt:"Perros",correct:true,
-msg:"Correcto. Porque tienen esa lealtad sincera que recuerda mucho a lo que siento cuando pienso en nosotros."},
+msg:"Correcto. Porque la lealtad y la alegría sincera siempre terminan robándose el corazón."},
 {txt:"Gatos",correct:false},
-{txt:"Ambos igual",correct:false}
+{txt:"Ambos",correct:false}
 ]
 },
 
 {
-text:"🌷 ¿Qué flores le gustan más?",
+text:"🌷 ¿Qué flores le gustan?",
 options:[
 {txt:"Tulipanes",correct:true,
-msg:"Los tulipanes tienen algo elegante y tranquilo, justo como la sensación que aparece cuando pienso en ti sin razón alguna."},
+msg:"Los tulipanes tienen algo tranquilo y bonito. Me recuerdan a esas sensaciones suaves que aparecen cuando pienso en ti."},
 {txt:"Rosas",correct:false},
 {txt:"Girasoles",correct:false}
 ]
 },
 
 {
-text:"⚾ Nivel deportivo... ¿qué deporte disfruta?",
+text:"⚾ ¿Qué deporte disfruta?",
 options:[
 {txt:"Béisbol",correct:true,
-msg:"Exacto. Y aunque yo vea el partido diferente, siempre sería divertido compartir ese momento solo por verte disfrutarlo."},
-{txt:"Baloncesto",correct:false},
-{txt:"Tenis",correct:false}
+msg:"Exacto. Aunque yo no entienda todas las jugadas, igual disfrutaría verlo solo por compartir ese momento contigo."},
+{txt:"Tenis",correct:false},
+{txt:"Baloncesto",correct:false}
 ]
 },
 
 {
-text:"⚽ Pregunta peligrosa... ¿a qué equipo apoya?",
+text:"⚽ ¿A qué equipo apoya?",
 options:[
 {txt:"Barcelona",correct:true,
-msg:"Sí, el Barcelona… y aquí viene mi defecto más hermoso: yo soy del Madrid 😌 pero incluso así sigo pensando que discutir por fútbol contigo sería más divertido que ganar cualquier clásico."},
+msg:"Sí, el Barcelona… y aquí aparece mi defecto más hermoso: yo soy del Madrid 😌 pero discutir contigo por fútbol suena más divertido que cualquier clásico."},
 {txt:"Real Madrid",correct:false},
 {txt:"Ninguno",correct:false}
 ]
 },
 
 {
-text:"❄️ Última pregunta... ¿clima favorito?",
+text:"❄️ ¿Clima favorito?",
 options:[
 {txt:"Invierno",correct:true,
-msg:"El invierno tiene algo especial. Es el tipo de clima que invita a quedarse hablando más tiempo, a sentir calma y a disfrutar la compañía sin prisa."},
+msg:"El invierno invita a quedarse más tiempo hablando, a disfrutar la calma y sentir que el mundo va más lento."},
 {txt:"Verano",correct:false},
 {txt:"Primavera",correct:false}
 ]
@@ -207,6 +224,9 @@ msg:"El invierno tiene algo especial. Es el tipo de clima que invita a quedarse 
 ];
 
 function render(){
+
+waitingNext=false;
+
 const story=document.getElementById("story");
 const choices=document.getElementById("choices");
 
@@ -218,15 +238,21 @@ return;
 story.innerHTML=questions[level].text;
 choices.innerHTML="";
 
-questions[level].options.forEach(opt=>{
+// MEZCLAR OPCIONES
+const mixed = shuffle([...questions[level].options]);
+
+mixed.forEach(opt=>{
 const btn=document.createElement("button");
 btn.innerText=opt.txt;
 
 btn.onclick=()=>{
+if(waitingNext) return;
+
 if(opt.correct){
 story.innerHTML=opt.msg;
-level++;
-setTimeout(render,2600);
+waitingNext=true;
+choices.innerHTML=
+`<button class="nextBtn" onclick="nextLevel()">➡️ Siguiente</button>`;
 }else{
 story.innerHTML="😝 champique, te equivocaste. Intenta otra vez.";
 }
@@ -236,9 +262,15 @@ choices.appendChild(btn);
 });
 }
 
+function nextLevel(){
+level++;
+render();
+}
+
 function finalScene(){
+
 document.getElementById("choices").innerHTML="";
-document.getElementById("story").innerHTML="💫 Has llegado al final del juego.";
+document.getElementById("story").innerHTML="💫 Fin del juego.";
 
 const final=document.getElementById("finalBox");
 final.style.display="block";
@@ -246,21 +278,22 @@ final.style.display="block";
 final.innerHTML=`
 <h2 style="color:#ff87f9;text-align:center;">Stephani, te amo</h2>
 
-A veces pienso que nuestra historia parece salida de un cuento raro y bonito,
-como si mezclara un poco de bella durmiente,
-un labubu perdido buscando su lugar,
-un umpa lumpa cantando algo inesperado
-y hasta un toque caótico tipo killer frots.
+Nuestra historia tiene algo curioso.
+Un poco de cuento como bella durmiente,
+un toque extraño como un labubu perdido,
+energía inesperada tipo umpa lumpa,
+y momentos caóticos dignos de killer frots.
 
-Y aun así todo tiene sentido porque estás tú.
+Y aun así todo se siente natural.
 
-No se trata solo de gustos o respuestas correctas.
-Se trata de cómo poco a poco te vuelves parte natural de mis días,
-de cómo sin darte cuenta haces que todo se sienta más ligero.
+Porque más allá de acertar respuestas,
+lo importante es cómo poco a poco te vuelves parte de mis días,
+de mis pensamientos tranquilos
+y de esos momentos donde simplemente sonrío sin razón.
 
 Si este juego demuestra algo,
 es que conocerte nunca fue casualidad.
-Y elegirte… tampoco lo es.
+Elegirte siempre será mi mejor decisión.
 `;
 }
 
