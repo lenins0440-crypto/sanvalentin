@@ -3,179 +3,398 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CHAD vs DOWN - Luck Game</title>
+<title>Aventura de Amor</title>
 
+<!-- ================== ESTILOS ================== -->
 <style>
-body{
-    margin:0;
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:#0f0f0f;
-    font-family:Arial, Helvetica, sans-serif;
-    color:white;
-    overflow:hidden;
-    transition:0.4s;
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
 }
 
-.container{
-    text-align:center;
-    background:#181818;
-    padding:40px;
-    border-radius:20px;
-    box-shadow:0 0 30px black;
-    width:320px;
+body{
+background:#000;
+color:#fff;
+overflow:hidden;
+height:100vh;
+}
+
+/* Fondo estrellas */
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
+}
+
+/* Pantallas */
+.screen{
+display:none;
+height:100vh;
+width:100%;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+text-align:center;
+padding:20px;
+animation:fade 1s ease;
+}
+
+.active{display:flex;}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(20px)}
+to{opacity:1;transform:translateY(0)}
 }
 
 h1{
-    margin-bottom:10px;
+color:#ffd700;
+text-shadow:0 0 15px gold;
+margin-bottom:20px;
 }
 
 button{
-    padding:15px 25px;
-    font-size:18px;
-    border:none;
-    border-radius:12px;
-    cursor:pointer;
-    background:#00c3ff;
-    color:white;
-    transition:0.2s;
+background:linear-gradient(45deg,#ffd700,#b8860b);
+border:none;
+padding:12px 25px;
+border-radius:30px;
+color:black;
+font-weight:bold;
+cursor:pointer;
+margin:10px;
+transition:.3s;
 }
 
 button:hover{
-    transform:scale(1.1);
+transform:scale(1.1);
+box-shadow:0 0 20px gold;
 }
 
-#result{
-    font-size:36px;
-    margin-top:20px;
-    min-height:50px;
+/* Barra amor */
+#loveBar{
+width:80%;
+height:20px;
+border:2px solid gold;
+border-radius:20px;
+overflow:hidden;
+margin-top:20px;
 }
 
-#message{
-    margin-top:10px;
-    font-size:18px;
-    opacity:0.8;
+#loveFill{
+height:100%;
+width:0%;
+background:gold;
+transition:.3s;
 }
 
-.bar{
-    margin-top:20px;
-    height:12px;
-    background:#333;
-    border-radius:10px;
-    overflow:hidden;
+/* corazones */
+.heart{
+position:absolute;
+font-size:24px;
+animation:float 6s linear infinite;
+cursor:pointer;
 }
 
-.fill{
-    height:100%;
-    width:50%;
-    background:#00ff88;
-    transition:0.5s;
+@keyframes float{
+from{transform:translateY(100vh)}
+to{transform:translateY(-10vh)}
 }
 
-.win{
-    color:#00ff88;
-    text-shadow:0 0 20px #00ff88;
+/* dragón simbólico */
+.dragon{
+font-size:70px;
+animation:fly 6s infinite linear;
 }
 
-.lose{
-    color:#ff3b3b;
-    text-shadow:0 0 20px red;
+@keyframes fly{
+0%{transform:translateX(-120%)}
+100%{transform:translateX(120%)}
 }
 
-@keyframes shake{
-    0%{transform:translateX(0)}
-    25%{transform:translateX(-8px)}
-    50%{transform:translateX(8px)}
-    75%{transform:translateX(-8px)}
-    100%{transform:translateX(0)}
+/* contador */
+#counter{
+margin-top:20px;
+font-size:18px;
+color:#ffd700;
 }
 
-.shake{
-    animation:shake 0.4s;
+/* modal carta */
+.modal{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.9);
+display:none;
+justify-content:center;
+align-items:center;
+padding:20px;
+}
+
+.modal-content{
+max-width:700px;
+background:#111;
+padding:30px;
+border-radius:15px;
+border:1px solid gold;
+overflow:auto;
+max-height:90vh;
+}
+
+.close{
+margin-top:20px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-    <h1>🎲 CHAD vs DOWN</h1>
-    <button onclick="play()">PROBAR SUERTE</button>
+<canvas id="stars"></canvas>
 
-    <div id="result"></div>
-    <div id="message"></div>
+<!-- ================== AUDIO ================== -->
+<audio id="music" loop>
+<source src="https://cdn.pixabay.com/audio/2022/03/15/audio_115b9bce4b.mp3">
+</audio>
 
-    <div class="bar">
-        <div class="fill" id="luckBar"></div>
-    </div>
+<audio id="clickSound">
+<source src="https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73467.mp3">
+</audio>
 
-    <p>🔥 Racha: <span id="streak">0</span></p>
+<!-- ================== PANTALLA INICIAL ================== -->
+<div id="start" class="screen active">
+<h1>Una historia escrita entre destinos…</h1>
+<p>Presiona comenzar.</p>
+<button onclick="startGame()">✨ Comenzar aventura</button>
+<div id="counter"></div>
 </div>
 
+<!-- ================== NIVEL 1 ================== -->
+<div id="level1" class="screen">
+<h1>Nivel 1 — Recuerdos</h1>
+<p>¿Cuál es su helado favorito?</p>
+<button onclick="answer('helado','chocolate')">🍫 Chocolate</button>
+<button onclick="answer('helado','vainilla')">🍦 Vainilla</button>
+
+<p style="margin-top:20px;">¿Deporte favorito?</p>
+<button onclick="answer('deporte','beisbol')">⚾ Béisbol</button>
+<button onclick="answer('deporte','futbol')">⚽ Fútbol</button>
+
+<p id="feedback"></p>
+</div>
+
+<!-- ================== NIVEL 2 ================== -->
+<div id="level2" class="screen">
+<h1>El Portal del Corazón</h1>
+<p>Haz clic en los corazones para llenar el amor.</p>
+<div id="loveBar"><div id="loveFill"></div></div>
+</div>
+
+<!-- ================== NIVEL 3 ================== -->
+<div id="level3" class="screen">
+<h1>Compatibilidad Perfecta</h1>
+<p id="quizText"></p>
+<button onclick="finishGame()">✨ Revelar destino</button>
+</div>
+
+<!-- ================== FINAL ================== -->
+<div id="final" class="screen">
+<div class="dragon">🐉✨🐉</div>
+
+<h1>
+Stephani Domínguez, cada momento contigo se convierte en historia.
+<br><br>
+Desde el primer segundo hasta todos los que vienen… te amo infinitamente.
+</h1>
+
+<button onclick="openLetter()">💌 Abrir carta secreta</button>
+</div>
+
+<!-- ================== CARTA ================== -->
+<div id="letterModal" class="modal">
+<div class="modal-content">
+<h2 style="color:gold">Carta secreta</h2>
+
+<p>
+Hay historias que nacen lentamente… y otras que simplemente el destino
+decide escribir sin pedir permiso.  
+Desde el primer instante, algo comenzó a alinearse como si el universo
+supiera exactamente hacia dónde debía llevarnos.
+</p><br>
+
+<p>
+No se trata solo de momentos grandes, sino de los pequeños:
+las risas inesperadas, las conversaciones infinitas,
+las miradas que dicen más que cualquier palabra.
+Ahí entendí que el amor verdadero no es perfecto,
+pero sí auténtico.
+</p><br>
+
+<p>
+Eres inspiración, calma y aventura al mismo tiempo.
+Como si cada día contigo fuera un nuevo capítulo,
+una nueva misión donde siempre vale la pena avanzar.
+</p><br>
+
+<p>
+Y aunque el mundo cambie, algo permanece constante:
+la forma en que haces que todo tenga más sentido,
+más luz y más emoción.
+</p><br>
+
+<p>
+Prometo seguir descubriendo caminos contigo,
+seguir aprendiendo tus sonrisas,
+y seguir eligiéndote en cada historia que venga.
+</p><br>
+
+<p style="color:gold;font-size:20px">
+Porque contigo… el destino siempre encuentra el camino.
+</p>
+
+<button class="close" onclick="closeLetter()">Cerrar</button>
+</div>
+</div>
+
+<!-- ================== SCRIPT ================== -->
 <script>
 
-let streak = 0;
+/* ---------- estrellas fondo ---------- */
+const canvas=document.getElementById("stars");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
 
-const winMessages = [
-"Modo leyenda activado 🗿",
-"El universo te respeta hoy",
-"Jugaste como campeón",
-"Nivel dios desbloqueado",
-"Suerte absurda detectada"
-];
-
-const loseMessages = [
-"La suerte te abandonó 😭",
-"Hoy no era tu día",
-"El RNG dijo NO",
-"Intentaste… fallaste",
-"Respawn emocional necesario"
-];
-
-function randomMessage(list){
-    return list[Math.floor(Math.random()*list.length)];
+let stars=[];
+for(let i=0;i<120;i++){
+stars.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:Math.random()*2
+});
 }
 
-function play(){
-
-    const result = document.getElementById("result");
-    const message = document.getElementById("message");
-    const bar = document.getElementById("luckBar");
-
-    let luck = Math.random();
-
-    bar.style.width = (luck*100)+"%";
-
-    if(luck > 0.5){
-
-        streak++;
-        result.className="win";
-        result.innerText="🗿 CHAD 🔥";
-        message.innerText=randomMessage(winMessages);
-
-        document.body.style.background=
-        "linear-gradient(135deg,#002b1f,#004d36)";
-
-    }else{
-
-        streak=0;
-        result.className="lose";
-        result.innerText="💀 DOWN";
-        message.innerText=randomMessage(loseMessages);
-
-        document.body.classList.add("shake");
-        setTimeout(()=>document.body.classList.remove("shake"),400);
-
-        document.body.style.background=
-        "linear-gradient(135deg,#2b0000,#4d0000)";
-    }
-
-    document.getElementById("streak").innerText=streak;
+function drawStars(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="white";
+stars.forEach(s=>{
+ctx.beginPath();
+ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+ctx.fill();
+});
+requestAnimationFrame(drawStars);
 }
+drawStars();
+
+/* ---------- util ---------- */
+function show(id){
+document.querySelectorAll(".screen")
+.forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+localStorage.setItem("level",id);
+}
+
+function sound(){
+document.getElementById("clickSound").play();
+}
+
+/* ---------- contador ---------- */
+const startDate=new Date("2025-09-28T02:27:00");
+
+function updateCounter(){
+let now=new Date();
+let diff=now-startDate;
+
+let s=Math.floor(diff/1000)%60;
+let m=Math.floor(diff/60000)%60;
+let h=Math.floor(diff/3600000)%24;
+let d=Math.floor(diff/86400000);
+let months=Math.floor(d/30);
+
+document.getElementById("counter").innerHTML=
+`💛 ${months} meses ${d%30} días ${h}h ${m}m ${s}s juntos`;
+}
+setInterval(updateCounter,1000);
+
+/* ---------- inicio ---------- */
+function startGame(){
+sound();
+document.getElementById("music").play();
+show("level1");
+}
+
+/* ---------- nivel 1 ---------- */
+let correct=0;
+
+function answer(type,value){
+sound();
+let msg="";
+if(type==="helado" && value==="chocolate"){correct++; msg="✨ Dulce recuerdo correcto";}
+else if(type==="deporte" && value==="beisbol"){correct++; msg="⚾ Exacto, conexión perfecta";}
+else msg="💛 Incluso cuando fallas… el amor sigue ganando.";
+
+document.getElementById("feedback").innerText=msg;
+
+if(correct>=2){
+setTimeout(()=>show("level2"),1200);
+}
+}
+
+/* ---------- nivel 2 ---------- */
+let love=0;
+const loveFill=document.getElementById("loveFill");
+
+function spawnHeart(){
+const heart=document.createElement("div");
+heart.className="heart";
+heart.innerText="💖";
+heart.style.left=Math.random()*90+"%";
+
+heart.onclick=()=>{
+sound();
+love+=10;
+loveFill.style.width=love+"%";
+heart.remove();
+
+if(love>=100){
+show("level3");
+}
+};
+document.body.appendChild(heart);
+setTimeout(()=>heart.remove(),6000);
+}
+
+setInterval(spawnHeart,900);
+
+/* ---------- nivel 3 ---------- */
+document.getElementById("quizText").innerHTML=
+"Origen venezolano lleno de fuerza y alegría 🇻🇪.<br><br>"+
+"El verdadero amor aprende incluso qué sabores evitar y cuáles compartir para siempre.<br><br>"+
+"Dos destinos guiados por Tairn y Andarna, guardianes del vínculo eterno.";
+
+/* ---------- final ---------- */
+function finishGame(){
+sound();
+show("final");
+}
+
+/* ---------- carta ---------- */
+function openLetter(){
+sound();
+document.getElementById("letterModal").style.display="flex";
+}
+function closeLetter(){
+document.getElementById("letterModal").style.display="none";
+}
+
+/* ---------- progreso ---------- */
+window.onload=()=>{
+let saved=localStorage.getItem("level");
+if(saved) show(saved);
+};
 
 </script>
-
 </body>
 </html>
