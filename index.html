@@ -2,382 +2,217 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Aventura Legendaria</title>
+<title>Modo Legendario ❤️</title>
 
 <style>
-
-/* ================= BASE ================= */
-*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif}
 body{
-background:black;
-color:white;
-overflow:hidden;
-height:100vh;
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:linear-gradient(135deg,#111,#1b0033,#000);
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
 }
 
-/* Canvas layers */
-canvas{
-position:fixed;
-top:0;
-left:0;
-z-index:-1;
-}
-
-/* Pantallas */
-.screen{
-position:absolute;
-width:100%;
-height:100%;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-text-align:center;
-opacity:0;
-pointer-events:none;
-transition:1s ease;
-padding:20px;
-}
-
-.active{
-opacity:1;
-pointer-events:auto;
+.game{
+    width:650px;
+    max-width:90%;
+    background:rgba(0,0,0,0.7);
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 0 25px #ff4df0;
 }
 
 h1{
-color:#FFD700;
-text-shadow:0 0 25px gold;
-margin-bottom:20px;
+    text-align:center;
+    color:#ff7df7;
 }
 
-/* Botones legendarios */
-button{
-background:linear-gradient(45deg,#ffd700,#b8860b);
-border:none;
-padding:14px 28px;
-border-radius:40px;
-font-weight:bold;
-cursor:pointer;
-transition:.3s;
-margin:10px;
+.textbox{
+    min-height:120px;
+    line-height:1.6;
+    font-size:18px;
+    margin-bottom:15px;
 }
 
-button:hover{
-transform:scale(1.1);
-box-shadow:0 0 30px gold;
+.buttons button{
+    width:100%;
+    margin:6px 0;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:#ff4df0;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
 }
 
-/* Barra amor */
-#bar{
-width:80%;
-height:22px;
-border:2px solid gold;
-border-radius:20px;
-overflow:hidden;
-margin-top:20px;
+.buttons button:hover{
+    transform:scale(1.05);
+    background:#ff78f5;
 }
 
-#fill{
-height:100%;
-width:0%;
-background:linear-gradient(90deg,gold,#fff);
-transition:.3s;
+.counter{
+    margin-top:15px;
+    text-align:center;
+    color:#ffd6ff;
+    font-size:14px;
 }
 
-/* corazones */
-.heart{
-position:absolute;
-font-size:26px;
-cursor:pointer;
-animation:float 6s linear;
+.legend{
+    margin-top:15px;
+    padding:10px;
+    background:#240033;
+    border-radius:10px;
+    display:none;
+    animation:fade 1s ease;
 }
 
-@keyframes float{
-from{transform:translateY(110vh)}
-to{transform:translateY(-10vh)}
+@keyframes fade{
+    from{opacity:0;}
+    to{opacity:1;}
 }
-
-/* contador */
-#counter{
-margin-top:15px;
-color:#ffd700;
-font-size:18px;
-}
-
-/* modal */
-.modal{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.9);
-display:none;
-justify-content:center;
-align-items:center;
-padding:20px;
-}
-
-.modal-content{
-background:#111;
-border:1px solid gold;
-padding:30px;
-border-radius:15px;
-max-width:700px;
-max-height:90vh;
-overflow:auto;
-}
-
 </style>
 </head>
 
 <body>
 
-<!-- CANVAS -->
-<canvas id="space"></canvas>
-<canvas id="dragons"></canvas>
+<div class="game">
 
-<!-- AUDIO -->
-<audio id="music" loop>
-<source src="https://cdn.pixabay.com/audio/2022/03/15/audio_115b9bce4b.mp3">
-</audio>
+<h1>✨ Modo Legendario ✨</h1>
 
-<audio id="click">
-<source src="https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73467.mp3">
-</audio>
-
-<!-- ================= INICIO ================= -->
-<div id="start" class="screen active">
-<h1>Una historia escrita entre destinos…</h1>
-<button onclick="start()">✨ Comenzar aventura</button>
-<div id="counter"></div>
+<div class="textbox" id="story">
+Bienvenido al reto secreto 💫<br>
+Solo alguien que realmente me conoce puede avanzar.<br><br>
+Adivina correctamente… y desbloquearás recuerdos bonitos.
 </div>
 
-<!-- ================= NIVEL 1 ================= -->
-<div id="level1" class="screen">
-<h1>Recuerdos del Destino</h1>
+<div class="buttons" id="choices"></div>
 
-<p>Helado favorito:</p>
-<button onclick="answer(true)">🍫 Chocolate</button>
-<button onclick="answer(false)">🍦 Vainilla</button>
+<div class="legend" id="legendMode"></div>
 
-<p style="margin-top:20px">Deporte favorito:</p>
-<button onclick="answer(true)">⚾ Béisbol</button>
-<button onclick="answer(false)">⚽ Fútbol</button>
+<div class="counter" id="counter"></div>
 
-<p id="msg"></p>
-</div>
-
-<!-- ================= NIVEL 2 ================= -->
-<div id="level2" class="screen">
-<h1>Portal del Corazón</h1>
-<p>Toca los corazones para liberar energía.</p>
-<div id="bar"><div id="fill"></div></div>
-</div>
-
-<!-- ================= NIVEL 3 ================= -->
-<div id="level3" class="screen">
-<h1>Compatibilidad Perfecta</h1>
-<p>
-Un alma con orgullo venezolano 🇻🇪,<br><br>
-guiada por Tairn y Andarna…<br><br>
-porque el verdadero amor aprende incluso
-qué sabores evitar para proteger la sonrisa del otro.
-</p>
-
-<button onclick="final()">✨ Revelar destino</button>
-</div>
-
-<!-- ================= FINAL ================= -->
-<div id="final" class="screen">
-<h1>
-Stephani Domínguez,<br><br>
-cada momento contigo se convierte en historia.<br><br>
-Desde el primer segundo hasta todos los que vienen…
-te amo infinitamente.
-</h1>
-
-<button onclick="openLetter()">💌 Abrir carta secreta</button>
-</div>
-
-<!-- CARTA -->
-<div id="letter" class="modal">
-<div class="modal-content">
-<h2 style="color:gold">Carta secreta</h2>
-
-<p>
-Hay conexiones que no necesitan explicación,
-solo sentirse.
-Desde el inicio supe que algo especial comenzaba,
-como si dos caminos escritos por separado
-decidieran encontrarse exactamente en el momento correcto.
-</p><br>
-
-<p>
-Eres calma y aventura al mismo tiempo,
-la razón por la que incluso los días normales
-se convierten en recuerdos importantes.
-</p><br>
-
-<p>
-No es solo amor…
-es complicidad, confianza y esa sensación
-de hogar que aparece incluso en silencio.
-</p><br>
-
-<p style="color:gold;font-size:20px">
-Y si esta historia fuera un libro,
-te elegiría en cada capítulo.
-</p>
-
-<button onclick="closeLetter()">Cerrar</button>
-</div>
 </div>
 
 <script>
 
-/* ================= TRANSICIONES ================= */
-function show(id){
-document.querySelectorAll(".screen")
-.forEach(s=>s.classList.remove("active"));
-document.getElementById(id).classList.add("active");
-localStorage.setItem("level",id);
-}
-
-/* ================= CONTADOR REAL ================= */
-/* Inicio: 28 Septiembre 2:27 AM */
-const startDate=new Date("2025-09-28T02:27:00");
+// ================= CONTADOR RELACIÓN =================
+const startDate = new Date("2025-09-28T02:27:00");
 
 function updateCounter(){
-let now=new Date();
-let diff=now-startDate;
+    const now = new Date();
+    const diff = now - startDate;
 
-let sec=Math.floor(diff/1000)%60;
-let min=Math.floor(diff/60000)%60;
-let hr=Math.floor(diff/3600000)%24;
-let days=Math.floor(diff/86400000);
-let months=Math.floor(days/30);
+    const days = Math.floor(diff/(1000*60*60*24));
+    const hours = Math.floor(diff/(1000*60*60)%24);
+    const minutes = Math.floor(diff/(1000*60)%60);
 
-document.getElementById("counter").innerHTML=
-`💛 ${months} meses ${days%30} días ${hr}h ${min}m ${sec}s juntos`;
+    document.getElementById("counter").innerHTML =
+    `⏳ Tiempo juntos: ${days} días, ${hours} horas y ${minutes} minutos`;
 }
 setInterval(updateCounter,1000);
 updateCounter();
 
-/* ================= INICIO ================= */
-function start(){
-document.getElementById("music").play();
-show("level1");
+
+// ================= JUEGO =================
+
+let score = 0;
+let level = 0;
+
+const questions = [
+
+{
+text:"Primera pregunta 💭 ¿Qué me hace más feliz?",
+options:[
+{txt:"Pasar tiempo contigo", correct:true,
+msg:"💖 Exacto… porque contigo hasta los días normales se sienten especiales."},
+
+{txt:"Dormir todo el día", correct:false},
+{txt:"Ver memes sin parar", correct:false}
+]
+},
+
+{
+text:"Segunda misión 🌙 ¿Qué prefiero en un momento tranquilo?",
+options:[
+{txt:"Conversar contigo por horas", correct:true,
+msg:"✨ Porque hablar contigo nunca se siente suficiente."},
+
+{txt:"Silencio absoluto", correct:false},
+{txt:"Nada, solo mirar el techo", correct:false}
+]
+},
+
+{
+text:"Nivel emocional ❤️ ¿Qué valoro más?",
+options:[
+{txt:"La conexión sincera", correct:true,
+msg:"💫 Porque lo nuestro se siente real, sin esfuerzo."},
+
+{txt:"Los regalos caros", correct:false},
+{txt:"Ganar discusiones", correct:false}
+]
 }
 
-/* ================= NIVEL 1 ================= */
-let correct=0;
-function answer(ok){
-document.getElementById("click").play();
-if(ok){
-correct++;
-document.getElementById("msg").innerText="✨ Recuerdo correcto.";
-}else{
-document.getElementById("msg").innerText="💛 Incluso fallando… el amor gana.";
+];
+
+function render(){
+    const story = document.getElementById("story");
+    const choices = document.getElementById("choices");
+
+    if(level >= questions.length){
+        legendUnlock();
+        return;
+    }
+
+    story.innerHTML = questions[level].text;
+    choices.innerHTML = "";
+
+    questions[level].options.forEach(opt=>{
+        const btn = document.createElement("button");
+        btn.innerText = opt.txt;
+
+        btn.onclick = ()=>{
+            if(opt.correct){
+                score++;
+                story.innerHTML = opt.msg;
+                level++;
+                setTimeout(render,2000);
+            }else{
+                story.innerHTML = "😝 champique, te equivocaste… intenta otra vez.";
+            }
+        };
+
+        choices.appendChild(btn);
+    });
 }
 
-if(correct>=2){
-setTimeout(()=>show("level2"),1200);
-}
-}
+function legendUnlock(){
+    document.getElementById("choices").innerHTML="";
+    document.getElementById("story").innerHTML =
+    "🏆 Has desbloqueado el MODO LEGENDARIO.";
 
-/* ================= NIVEL 2 ================= */
-let love=0;
-const fill=document.getElementById("fill");
-
-function spawnHeart(){
-if(!document.getElementById("level2").classList.contains("active")) return;
-
-let h=document.createElement("div");
-h.className="heart";
-h.innerText="💖";
-h.style.left=Math.random()*90+"%";
-
-h.onclick=()=>{
-love+=10;
-fill.style.width=love+"%";
-h.remove();
-if(love>=100) show("level3");
-};
-
-document.body.appendChild(h);
-setTimeout(()=>h.remove(),6000);
-}
-setInterval(spawnHeart,900);
-
-/* ================= FINAL ================= */
-function final(){ show("final"); }
-
-/* ================= CARTA ================= */
-function openLetter(){
-document.getElementById("letter").style.display="flex";
-}
-function closeLetter(){
-document.getElementById("letter").style.display="none";
+    const legend = document.getElementById("legendMode");
+    legend.style.display="block";
+    legend.innerHTML = `
+    🌌 Versión Legendaria Activada<br><br>
+    Desde aquel 28 de septiembre a las 2:27 a.m.,
+    comenzó una historia que sigue creciendo.<br><br>
+    No es suerte… es conexión.<br>
+    No es coincidencia… es elección diaria.<br><br>
+    Y si llegaste hasta aquí,
+    significa que conoces mi corazón más de lo que imaginas ❤️
+    `;
 }
 
-/* ================= ESPACIO + PARTÍCULAS ================= */
-const space=document.getElementById("space");
-const ctx=space.getContext("2d");
-space.width=innerWidth;
-space.height=innerHeight;
-
-let stars=[];
-for(let i=0;i<140;i++){
-stars.push({x:Math.random()*space.width,
-y:Math.random()*space.height,
-r:Math.random()*2});
-}
-
-function animateSpace(){
-ctx.clearRect(0,0,space.width,space.height);
-ctx.fillStyle="white";
-stars.forEach(s=>{
-ctx.beginPath();
-ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-ctx.fill();
-});
-requestAnimationFrame(animateSpace);
-}
-animateSpace();
-
-/* ================= DRAGONES CINEMÁTICOS ================= */
-const dcanvas=document.getElementById("dragons");
-const dctx=dcanvas.getContext("2d");
-dcanvas.width=innerWidth;
-dcanvas.height=innerHeight;
-
-let t=0;
-function dragons(){
-dctx.clearRect(0,0,dcanvas.width,dcanvas.height);
-
-t+=0.01;
-
-/* Dragón dorado */
-dctx.fillStyle="gold";
-dctx.beginPath();
-dctx.arc(200+Math.sin(t)*200,200,20,0,Math.PI*2);
-dctx.fill();
-
-/* Dragón negro */
-dctx.fillStyle="white";
-dctx.beginPath();
-dctx.arc(innerWidth-200+Math.cos(t)*200,350,20,0,Math.PI*2);
-dctx.fill();
-
-requestAnimationFrame(dragons);
-}
-dragons();
-
-/* ================= PROGRESO ================= */
-window.onload=()=>{
-let saved=localStorage.getItem("level");
-if(saved) show(saved);
-};
+render();
 
 </script>
+
 </body>
 </html>
+
