@@ -31,7 +31,7 @@ color:#ff87f9;
 }
 
 .textbox{
-min-height:140px;
+min-height:150px;
 line-height:1.7;
 font-size:18px;
 margin-bottom:15px;
@@ -88,10 +88,12 @@ to{opacity:1}
 
 <div class="game">
 
-<h1>✨ Juego del Corazón ✨</h1>
+<h1>✨ Recuerdos contigo ✨</h1>
 
 <div id="story" class="textbox">
-Solo alguien que realmente me conoce puede avanzar 💫
+Voy a comprobar algo…<br><br>
+Cada pregunta no es un reto.<br>
+Son recuerdos míos sobre ti, pequeñas cosas que aprendí porque me importas más de lo que imaginas.
 </div>
 
 <div id="choices" class="buttons"></div>
@@ -116,15 +118,13 @@ const hours = Math.floor(diff/(1000*60*60)%24);
 const minutes = Math.floor(diff/(1000*60)%60);
 
 document.getElementById("counter").innerHTML =
-`⏳ Tiempo juntos: ${days} días ${hours} horas ${minutes} minutos`;
+`⏳ Tiempo creando recuerdos: ${days} días ${hours} horas ${minutes} minutos`;
 }
 setInterval(updateCounter,1000);
 updateCounter();
 
 
 // ================= UTIL =================
-
-// Mezclar opciones (Fisher-Yates)
 function shuffle(array){
 for(let i=array.length-1;i>0;i--){
 const j=Math.floor(Math.random()*(i+1));
@@ -137,85 +137,85 @@ return array;
 // ================= JUEGO =================
 
 let level = 0;
-let waitingNext = false;
+let waitingNext=false;
 
 const questions = [
 
 {
-text:"🍣 ¿Cuál es su comida favorita?",
+text:"🍣 Recuerdo uno… sé perfectamente cuál es tu comida favorita.",
 options:[
 {txt:"Sushi",correct:true,
-msg:"Sabía que lo recordarías. Pensar en compartir sushi contigo se siente como esos momentos simples que terminan siendo inolvidables porque estás tú."},
+msg:"Sí, sushi. Porque recordar lo que te gusta se volvió algo natural. Son esos detalles pequeños los que me hacen sentir cerca de ti incluso cuando solo estoy pensando en nosotros."},
 {txt:"Pizza",correct:false},
 {txt:"Hamburguesa",correct:false}
 ]
 },
 
 {
-text:"🥥 ¿Qué fruta no soporta?",
+text:"🥥 Hay algo que siempre recuerdo evitar por ti.",
 options:[
 {txt:"Coco",correct:true,
-msg:"Exacto. Amar también es recordar esas pequeñas cosas para cuidar sonrisas sin que tengan que pedirlo."},
+msg:"Exacto. Porque cuidarte también significa recordar lo que puede hacerte daño. Y sin que lo notes, uno aprende a proteger lo que quiere."},
 {txt:"Fresa",correct:false},
 {txt:"Mango",correct:false}
 ]
 },
 
 {
-text:"🥝 ¿Qué fruta ama?",
+text:"🥝 También aprendí cuál fruta te hace feliz.",
 options:[
 {txt:"Kiwi",correct:true,
-msg:"Sí, el kiwi. Pequeño pero especial, como esos momentos contigo que aparecen sin aviso y terminan alegrando todo."},
+msg:"El kiwi. Algo tan simple pero que ahora siempre asocio contigo. Es curioso cómo ciertos sabores empiezan a tener nombre propio."},
 {txt:"Banano",correct:false},
 {txt:"Manzana",correct:false}
 ]
 },
 
 {
-text:"🐶 ¿Qué prefiere?",
+text:"🐶 Otro recuerdo fácil…",
 options:[
-{txt:"Perros",correct:true,
-msg:"Correcto. Porque la lealtad y la alegría sincera siempre terminan robándose el corazón."},
-{txt:"Gatos",correct:false},
-{txt:"Ambos",correct:false}
+{txt:"Prefieres perros",correct:true,
+msg:"Sí, perros. Porque transmiten esa alegría sincera que siento cada vez que hablo contigo sin planear nada."},
+{txt:"Prefieres gatos",correct:false},
+{txt:"Ambos igual",correct:false}
 ]
 },
 
 {
-text:"🌷 ¿Qué flores le gustan?",
+text:"🌷 Hay flores que automáticamente me recuerdan a ti.",
 options:[
 {txt:"Tulipanes",correct:true,
-msg:"Los tulipanes tienen algo tranquilo y bonito. Me recuerdan a esas sensaciones suaves que aparecen cuando pienso en ti."},
+msg:"Tulipanes. Tienen algo tranquilo y bonito, como esas conversaciones que empiezan normales y terminan siendo especiales sin darse cuenta."},
 {txt:"Rosas",correct:false},
 {txt:"Girasoles",correct:false}
 ]
 },
 
 {
-text:"⚾ ¿Qué deporte disfruta?",
+text:"⚾ Sé perfectamente qué deporte disfrutas.",
 options:[
 {txt:"Béisbol",correct:true,
-msg:"Exacto. Aunque yo no entienda todas las jugadas, igual disfrutaría verlo solo por compartir ese momento contigo."},
+msg:"Béisbol. Y aunque yo no entienda cada jugada, igual disfrutaría verlo solo porque compartirlo contigo lo vuelve importante."},
 {txt:"Tenis",correct:false},
 {txt:"Baloncesto",correct:false}
 ]
 },
 
 {
-text:"⚽ ¿A qué equipo apoya?",
+text:"⚽ Y sí… este recuerdo siempre causa debate.",
 options:[
 {txt:"Barcelona",correct:true,
-msg:"Sí, el Barcelona… y aquí aparece mi defecto más hermoso: yo soy del Madrid 😌 pero discutir contigo por fútbol suena más divertido que cualquier clásico."},
+msg:"Barcelona… y aquí aparece mi defecto más hermoso. Yo soy del Madrid. Pero honestamente discutir contigo por fútbol suena más divertido que cualquier clásico."},
 {txt:"Real Madrid",correct:false},
 {txt:"Ninguno",correct:false}
 ]
 },
 
 {
-text:"❄️ ¿Clima favorito?",
+text:"❄️ Último recuerdo… el clima donde todo se siente más bonito.",
 options:[
 {txt:"Invierno",correct:true,
-msg:"El invierno invita a quedarse más tiempo hablando, a disfrutar la calma y sentir que el mundo va más lento."},
+msg:"El invierno. Ese tipo de clima que invita a quedarse hablando más tiempo y sentir que el mundo se vuelve un poco más tranquilo."},
 {txt:"Verano",correct:false},
 {txt:"Primavera",correct:false}
 ]
@@ -238,8 +238,7 @@ return;
 story.innerHTML=questions[level].text;
 choices.innerHTML="";
 
-// MEZCLAR OPCIONES
-const mixed = shuffle([...questions[level].options]);
+const mixed=shuffle([...questions[level].options]);
 
 mixed.forEach(opt=>{
 const btn=document.createElement("button");
@@ -251,10 +250,9 @@ if(waitingNext) return;
 if(opt.correct){
 story.innerHTML=opt.msg;
 waitingNext=true;
-choices.innerHTML=
-`<button class="nextBtn" onclick="nextLevel()">➡️ Siguiente</button>`;
+choices.innerHTML=`<button class="nextBtn" onclick="nextLevel()">➡️ Siguiente recuerdo</button>`;
 }else{
-story.innerHTML="😝 champique, te equivocaste. Intenta otra vez.";
+story.innerHTML="😝 champique, te equivocaste. Ese recuerdo sí lo tengo claro.";
 }
 };
 
@@ -270,7 +268,7 @@ render();
 function finalScene(){
 
 document.getElementById("choices").innerHTML="";
-document.getElementById("story").innerHTML="💫 Fin del juego.";
+document.getElementById("story").innerHTML="💫 Todos los recuerdos llevan al mismo lugar.";
 
 const final=document.getElementById("finalBox");
 final.style.display="block";
@@ -280,20 +278,18 @@ final.innerHTML=`
 
 Nuestra historia tiene algo curioso.
 Un poco de cuento como bella durmiente,
-un toque extraño como un labubu perdido,
-energía inesperada tipo umpa lumpa,
-y momentos caóticos dignos de killer frots.
+algo inesperado como un labubu perdido,
+momentos caóticos dignos de killer frots
+y esa energía rara y divertida tipo umpa lumpa.
 
-Y aun así todo se siente natural.
+Pero al final todo se resume en algo simple.
 
-Porque más allá de acertar respuestas,
-lo importante es cómo poco a poco te vuelves parte de mis días,
-de mis pensamientos tranquilos
-y de esos momentos donde simplemente sonrío sin razón.
+Aprenderte poco a poco.
+Recordar detalles sin esfuerzo.
+Y darme cuenta de que pensar en ti ya es parte normal de mis días.
 
-Si este juego demuestra algo,
-es que conocerte nunca fue casualidad.
-Elegirte siempre será mi mejor decisión.
+No fue casualidad conocerte.
+Y definitivamente no es casualidad seguir eligiéndote.
 `;
 }
 
@@ -302,4 +298,5 @@ render();
 </script>
 </body>
 </html>
+
 
