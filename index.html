@@ -2,26 +2,21 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aventura de Amor</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Aventura Legendaria</title>
 
-<!-- ================== ESTILOS ================== -->
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Segoe UI',sans-serif;
-}
 
+/* ================= BASE ================= */
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif}
 body{
-background:#000;
-color:#fff;
+background:black;
+color:white;
 overflow:hidden;
 height:100vh;
 }
 
-/* Fondo estrellas */
+/* Canvas layers */
 canvas{
 position:fixed;
 top:0;
@@ -31,102 +26,89 @@ z-index:-1;
 
 /* Pantallas */
 .screen{
-display:none;
-height:100vh;
+position:absolute;
 width:100%;
+height:100%;
+display:flex;
+flex-direction:column;
 justify-content:center;
 align-items:center;
-flex-direction:column;
 text-align:center;
+opacity:0;
+pointer-events:none;
+transition:1s ease;
 padding:20px;
-animation:fade 1s ease;
 }
 
-.active{display:flex;}
-
-@keyframes fade{
-from{opacity:0;transform:translateY(20px)}
-to{opacity:1;transform:translateY(0)}
+.active{
+opacity:1;
+pointer-events:auto;
 }
 
 h1{
-color:#ffd700;
-text-shadow:0 0 15px gold;
+color:#FFD700;
+text-shadow:0 0 25px gold;
 margin-bottom:20px;
 }
 
+/* Botones legendarios */
 button{
 background:linear-gradient(45deg,#ffd700,#b8860b);
 border:none;
-padding:12px 25px;
-border-radius:30px;
-color:black;
+padding:14px 28px;
+border-radius:40px;
 font-weight:bold;
 cursor:pointer;
-margin:10px;
 transition:.3s;
+margin:10px;
 }
 
 button:hover{
 transform:scale(1.1);
-box-shadow:0 0 20px gold;
+box-shadow:0 0 30px gold;
 }
 
 /* Barra amor */
-#loveBar{
+#bar{
 width:80%;
-height:20px;
+height:22px;
 border:2px solid gold;
 border-radius:20px;
 overflow:hidden;
 margin-top:20px;
 }
 
-#loveFill{
+#fill{
 height:100%;
 width:0%;
-background:gold;
+background:linear-gradient(90deg,gold,#fff);
 transition:.3s;
 }
 
 /* corazones */
 .heart{
 position:absolute;
-font-size:24px;
-animation:float 6s linear infinite;
+font-size:26px;
 cursor:pointer;
+animation:float 6s linear;
 }
 
 @keyframes float{
-from{transform:translateY(100vh)}
+from{transform:translateY(110vh)}
 to{transform:translateY(-10vh)}
-}
-
-/* dragón simbólico */
-.dragon{
-font-size:70px;
-animation:fly 6s infinite linear;
-}
-
-@keyframes fly{
-0%{transform:translateX(-120%)}
-100%{transform:translateX(120%)}
 }
 
 /* contador */
 #counter{
-margin-top:20px;
-font-size:18px;
+margin-top:15px;
 color:#ffd700;
+font-size:18px;
 }
 
-/* modal carta */
+/* modal */
 .modal{
 position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
+inset:0;
 background:rgba(0,0,0,.9);
 display:none;
 justify-content:center;
@@ -135,160 +117,124 @@ padding:20px;
 }
 
 .modal-content{
-max-width:700px;
 background:#111;
+border:1px solid gold;
 padding:30px;
 border-radius:15px;
-border:1px solid gold;
-overflow:auto;
+max-width:700px;
 max-height:90vh;
+overflow:auto;
 }
 
-.close{
-margin-top:20px;
-}
 </style>
 </head>
 
 <body>
 
-<canvas id="stars"></canvas>
+<!-- CANVAS -->
+<canvas id="space"></canvas>
+<canvas id="dragons"></canvas>
 
-<!-- ================== AUDIO ================== -->
+<!-- AUDIO -->
 <audio id="music" loop>
 <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_115b9bce4b.mp3">
 </audio>
 
-<audio id="clickSound">
+<audio id="click">
 <source src="https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73467.mp3">
 </audio>
 
-<!-- ================== PANTALLA INICIAL ================== -->
+<!-- ================= INICIO ================= -->
 <div id="start" class="screen active">
 <h1>Una historia escrita entre destinos…</h1>
-<p>Presiona comenzar.</p>
-<button onclick="startGame()">✨ Comenzar aventura</button>
+<button onclick="start()">✨ Comenzar aventura</button>
 <div id="counter"></div>
 </div>
 
-<!-- ================== NIVEL 1 ================== -->
+<!-- ================= NIVEL 1 ================= -->
 <div id="level1" class="screen">
-<h1>Nivel 1 — Recuerdos</h1>
-<p>¿Cuál es su helado favorito?</p>
-<button onclick="answer('helado','chocolate')">🍫 Chocolate</button>
-<button onclick="answer('helado','vainilla')">🍦 Vainilla</button>
+<h1>Recuerdos del Destino</h1>
 
-<p style="margin-top:20px;">¿Deporte favorito?</p>
-<button onclick="answer('deporte','beisbol')">⚾ Béisbol</button>
-<button onclick="answer('deporte','futbol')">⚽ Fútbol</button>
+<p>Helado favorito:</p>
+<button onclick="answer(true)">🍫 Chocolate</button>
+<button onclick="answer(false)">🍦 Vainilla</button>
 
-<p id="feedback"></p>
+<p style="margin-top:20px">Deporte favorito:</p>
+<button onclick="answer(true)">⚾ Béisbol</button>
+<button onclick="answer(false)">⚽ Fútbol</button>
+
+<p id="msg"></p>
 </div>
 
-<!-- ================== NIVEL 2 ================== -->
+<!-- ================= NIVEL 2 ================= -->
 <div id="level2" class="screen">
-<h1>El Portal del Corazón</h1>
-<p>Haz clic en los corazones para llenar el amor.</p>
-<div id="loveBar"><div id="loveFill"></div></div>
+<h1>Portal del Corazón</h1>
+<p>Toca los corazones para liberar energía.</p>
+<div id="bar"><div id="fill"></div></div>
 </div>
 
-<!-- ================== NIVEL 3 ================== -->
+<!-- ================= NIVEL 3 ================= -->
 <div id="level3" class="screen">
 <h1>Compatibilidad Perfecta</h1>
-<p id="quizText"></p>
-<button onclick="finishGame()">✨ Revelar destino</button>
+<p>
+Un alma con orgullo venezolano 🇻🇪,<br><br>
+guiada por Tairn y Andarna…<br><br>
+porque el verdadero amor aprende incluso
+qué sabores evitar para proteger la sonrisa del otro.
+</p>
+
+<button onclick="final()">✨ Revelar destino</button>
 </div>
 
-<!-- ================== FINAL ================== -->
+<!-- ================= FINAL ================= -->
 <div id="final" class="screen">
-<div class="dragon">🐉✨🐉</div>
-
 <h1>
-Stephani Domínguez, cada momento contigo se convierte en historia.
-<br><br>
-Desde el primer segundo hasta todos los que vienen… te amo infinitamente.
+Stephani Domínguez,<br><br>
+cada momento contigo se convierte en historia.<br><br>
+Desde el primer segundo hasta todos los que vienen…
+te amo infinitamente.
 </h1>
 
 <button onclick="openLetter()">💌 Abrir carta secreta</button>
 </div>
 
-<!-- ================== CARTA ================== -->
-<div id="letterModal" class="modal">
+<!-- CARTA -->
+<div id="letter" class="modal">
 <div class="modal-content">
 <h2 style="color:gold">Carta secreta</h2>
 
 <p>
-Hay historias que nacen lentamente… y otras que simplemente el destino
-decide escribir sin pedir permiso.  
-Desde el primer instante, algo comenzó a alinearse como si el universo
-supiera exactamente hacia dónde debía llevarnos.
+Hay conexiones que no necesitan explicación,
+solo sentirse.
+Desde el inicio supe que algo especial comenzaba,
+como si dos caminos escritos por separado
+decidieran encontrarse exactamente en el momento correcto.
 </p><br>
 
 <p>
-No se trata solo de momentos grandes, sino de los pequeños:
-las risas inesperadas, las conversaciones infinitas,
-las miradas que dicen más que cualquier palabra.
-Ahí entendí que el amor verdadero no es perfecto,
-pero sí auténtico.
+Eres calma y aventura al mismo tiempo,
+la razón por la que incluso los días normales
+se convierten en recuerdos importantes.
 </p><br>
 
 <p>
-Eres inspiración, calma y aventura al mismo tiempo.
-Como si cada día contigo fuera un nuevo capítulo,
-una nueva misión donde siempre vale la pena avanzar.
-</p><br>
-
-<p>
-Y aunque el mundo cambie, algo permanece constante:
-la forma en que haces que todo tenga más sentido,
-más luz y más emoción.
-</p><br>
-
-<p>
-Prometo seguir descubriendo caminos contigo,
-seguir aprendiendo tus sonrisas,
-y seguir eligiéndote en cada historia que venga.
+No es solo amor…
+es complicidad, confianza y esa sensación
+de hogar que aparece incluso en silencio.
 </p><br>
 
 <p style="color:gold;font-size:20px">
-Porque contigo… el destino siempre encuentra el camino.
+Y si esta historia fuera un libro,
+te elegiría en cada capítulo.
 </p>
 
-<button class="close" onclick="closeLetter()">Cerrar</button>
+<button onclick="closeLetter()">Cerrar</button>
 </div>
 </div>
 
-<!-- ================== SCRIPT ================== -->
 <script>
 
-/* ---------- estrellas fondo ---------- */
-const canvas=document.getElementById("stars");
-const ctx=canvas.getContext("2d");
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
-
-let stars=[];
-for(let i=0;i<120;i++){
-stars.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-r:Math.random()*2
-});
-}
-
-function drawStars(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
-ctx.fillStyle="white";
-stars.forEach(s=>{
-ctx.beginPath();
-ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-ctx.fill();
-});
-requestAnimationFrame(drawStars);
-}
-drawStars();
-
-/* ---------- util ---------- */
+/* ================= TRANSICIONES ================= */
 function show(id){
 document.querySelectorAll(".screen")
 .forEach(s=>s.classList.remove("active"));
@@ -296,100 +242,137 @@ document.getElementById(id).classList.add("active");
 localStorage.setItem("level",id);
 }
 
-function sound(){
-document.getElementById("clickSound").play();
-}
-
-/* ---------- contador ---------- */
+/* ================= CONTADOR REAL ================= */
+/* Inicio: 28 Septiembre 2:27 AM */
 const startDate=new Date("2025-09-28T02:27:00");
 
 function updateCounter(){
 let now=new Date();
 let diff=now-startDate;
 
-let s=Math.floor(diff/1000)%60;
-let m=Math.floor(diff/60000)%60;
-let h=Math.floor(diff/3600000)%24;
-let d=Math.floor(diff/86400000);
-let months=Math.floor(d/30);
+let sec=Math.floor(diff/1000)%60;
+let min=Math.floor(diff/60000)%60;
+let hr=Math.floor(diff/3600000)%24;
+let days=Math.floor(diff/86400000);
+let months=Math.floor(days/30);
 
 document.getElementById("counter").innerHTML=
-`💛 ${months} meses ${d%30} días ${h}h ${m}m ${s}s juntos`;
+`💛 ${months} meses ${days%30} días ${hr}h ${min}m ${sec}s juntos`;
 }
 setInterval(updateCounter,1000);
+updateCounter();
 
-/* ---------- inicio ---------- */
-function startGame(){
-sound();
+/* ================= INICIO ================= */
+function start(){
 document.getElementById("music").play();
 show("level1");
 }
 
-/* ---------- nivel 1 ---------- */
+/* ================= NIVEL 1 ================= */
 let correct=0;
-
-function answer(type,value){
-sound();
-let msg="";
-if(type==="helado" && value==="chocolate"){correct++; msg="✨ Dulce recuerdo correcto";}
-else if(type==="deporte" && value==="beisbol"){correct++; msg="⚾ Exacto, conexión perfecta";}
-else msg="💛 Incluso cuando fallas… el amor sigue ganando.";
-
-document.getElementById("feedback").innerText=msg;
+function answer(ok){
+document.getElementById("click").play();
+if(ok){
+correct++;
+document.getElementById("msg").innerText="✨ Recuerdo correcto.";
+}else{
+document.getElementById("msg").innerText="💛 Incluso fallando… el amor gana.";
+}
 
 if(correct>=2){
 setTimeout(()=>show("level2"),1200);
 }
 }
 
-/* ---------- nivel 2 ---------- */
+/* ================= NIVEL 2 ================= */
 let love=0;
-const loveFill=document.getElementById("loveFill");
+const fill=document.getElementById("fill");
 
 function spawnHeart(){
-const heart=document.createElement("div");
-heart.className="heart";
-heart.innerText="💖";
-heart.style.left=Math.random()*90+"%";
+if(!document.getElementById("level2").classList.contains("active")) return;
 
-heart.onclick=()=>{
-sound();
+let h=document.createElement("div");
+h.className="heart";
+h.innerText="💖";
+h.style.left=Math.random()*90+"%";
+
+h.onclick=()=>{
 love+=10;
-loveFill.style.width=love+"%";
-heart.remove();
-
-if(love>=100){
-show("level3");
-}
+fill.style.width=love+"%";
+h.remove();
+if(love>=100) show("level3");
 };
-document.body.appendChild(heart);
-setTimeout(()=>heart.remove(),6000);
-}
 
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),6000);
+}
 setInterval(spawnHeart,900);
 
-/* ---------- nivel 3 ---------- */
-document.getElementById("quizText").innerHTML=
-"Origen venezolano lleno de fuerza y alegría 🇻🇪.<br><br>"+
-"El verdadero amor aprende incluso qué sabores evitar y cuáles compartir para siempre.<br><br>"+
-"Dos destinos guiados por Tairn y Andarna, guardianes del vínculo eterno.";
+/* ================= FINAL ================= */
+function final(){ show("final"); }
 
-/* ---------- final ---------- */
-function finishGame(){
-sound();
-show("final");
-}
-
-/* ---------- carta ---------- */
+/* ================= CARTA ================= */
 function openLetter(){
-sound();
-document.getElementById("letterModal").style.display="flex";
+document.getElementById("letter").style.display="flex";
 }
 function closeLetter(){
-document.getElementById("letterModal").style.display="none";
+document.getElementById("letter").style.display="none";
 }
 
-/* ---------- progreso ---------- */
+/* ================= ESPACIO + PARTÍCULAS ================= */
+const space=document.getElementById("space");
+const ctx=space.getContext("2d");
+space.width=innerWidth;
+space.height=innerHeight;
+
+let stars=[];
+for(let i=0;i<140;i++){
+stars.push({x:Math.random()*space.width,
+y:Math.random()*space.height,
+r:Math.random()*2});
+}
+
+function animateSpace(){
+ctx.clearRect(0,0,space.width,space.height);
+ctx.fillStyle="white";
+stars.forEach(s=>{
+ctx.beginPath();
+ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+ctx.fill();
+});
+requestAnimationFrame(animateSpace);
+}
+animateSpace();
+
+/* ================= DRAGONES CINEMÁTICOS ================= */
+const dcanvas=document.getElementById("dragons");
+const dctx=dcanvas.getContext("2d");
+dcanvas.width=innerWidth;
+dcanvas.height=innerHeight;
+
+let t=0;
+function dragons(){
+dctx.clearRect(0,0,dcanvas.width,dcanvas.height);
+
+t+=0.01;
+
+/* Dragón dorado */
+dctx.fillStyle="gold";
+dctx.beginPath();
+dctx.arc(200+Math.sin(t)*200,200,20,0,Math.PI*2);
+dctx.fill();
+
+/* Dragón negro */
+dctx.fillStyle="white";
+dctx.beginPath();
+dctx.arc(innerWidth-200+Math.cos(t)*200,350,20,0,Math.PI*2);
+dctx.fill();
+
+requestAnimationFrame(dragons);
+}
+dragons();
+
+/* ================= PROGRESO ================= */
 window.onload=()=>{
 let saved=localStorage.getItem("level");
 if(saved) show(saved);
